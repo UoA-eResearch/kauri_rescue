@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Kauri Rescue Social Science Model</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js" integrity="sha512-/DXTXr6nQodMUiq+IUJYCt2PPOUjrHJ9wFrqpJ3XkgPNOZVfMok7cRw6CSxyCQxXn6ozlESsSh1/sMCTF1rL/g==" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -40,6 +41,14 @@
             }
         }
         const transitionTime = 1000;
+        const imageLookup = {
+            "#social_scientists": "images/Structural parts/Social-scientist-Marie-McEntee.jpg",
+            "#community_liason": "images/Structural parts/Community-liaison-Dr Mels Barton.jpg",
+            "#mana_whenua_text": "images/Structural parts/Waitangi Wood (Mana Whenua Liason).jpg",
+            "#mana_whenua": "images/Structural parts/Waitangi Wood (Mana Whenua Liason).jpg",
+            "#physical_scientists": "images/Structural parts/Scientist-Nick-Waipara.jpg",
+            "#technicians": "images/Structural parts/Lee Hill (Technical Manager).jpg",
+        }
         d3.xml('model.svg').then(data => {
             document.body.append(data.documentElement) // load the data and put it in the DOM
             let prevPhase = 0;
@@ -47,6 +56,14 @@
             for (var key in phaseDescriptors.opacity) {
                 d3.select(key).style("opacity", phaseDescriptors.opacity[key][0])
             }
+            $.each(imageLookup, function(key) {
+                let img = $(`<img src="${imageLookup[key]}" id="${key.slice(1)}_img" style="display:none">`).appendTo("body");
+                d3.select(key).on("mouseover touchstart", function() {
+                    img.css({position: "absolute", display: "block", left: d3.event.x, top: d3.event.y - 300, height: 300})
+                }).on("mouseout touchend", function() {
+                    img.hide()
+                });
+            });
             d3.select("#timeline_marker").call(d3.drag()
                 .on("start", function() {
                     d3.select(this).attr("stroke", "orange")
