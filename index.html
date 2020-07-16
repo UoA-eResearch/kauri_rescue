@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Kauri Rescue Social Science Model</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+    <script>
+        const phaseDescriptors = {
+            "opacity": {
+                "#funding":                 [0, 1, 0, 0, 0, 0],
+                "#project_team":            [0, 1, 1, 1, 1, 1],
+                "#team_knowledge":          [0, 0, 0, 1, 1, 1],
+                "#collaborative_parts":     [0, 0, 1, 1, 1, 1],
+                "#flow_arrow":              [0, 0, 1, 0, 0, 0],
+                "#enablers":                [0, 0, 0, 1, 1, 1],
+                "#disablers":               [0, 0, 0, 1, 1, 1],
+                "#functional_parts":        [0, 0, 0, 1, 1, 1],
+                "#learning_title":          [0, 0, 0, 1, 1, 1],
+                "#networking_planning":     [0, 0, 1, 0, 0, 0],
+                "#accumulated":             [0, 0, 0, 1, 1, 1],
+                "#community_facilitator":   [0, 0, 0, 0, 1, 1],
+                "#ambassador_program":      [0, 0, 0, 0, 1, 1],
+                "#participant_engagement":  [0, 0, 0, 0, 1, 1],
+                "#collab_activities":       [0, 0, 0, 0, 1, 1],
+            },
+            "transform": {
+                "#mana_whenua":[
+                    "translate(0, 0)",
+                    "translate(0, 0)",
+                    "translate(-20, 150)",
+                    "translate(-20, 250)",
+                    "translate(-20, 250)",
+                    "translate(-20, 250)"
+                ]
+            }
+        }
+        const transitionTime = 1000;
+        d3.xml('model.svg').then(data => {
+            document.body.append(data.documentElement) // load the data and put it in the DOM
+            let prevPhase = 0;
+            // init opacity
+            for (var key in phaseDescriptors.opacity) {
+                d3.select(key).style("opacity", phaseDescriptors.opacity[key][0])
+            }
+            d3.select("#timeline_marker").call(d3.drag()
+                .on("start", function() {
+                    d3.select(this).attr("stroke", "orange")
+                })
+                .on("drag", function() {
+                    var x = d3.event.x;
+                    if (x > 390 && x < 683) { // ends of the timeline slider
+                        d3.select(this).attr("cx", d3.event.x)
+                        var phase = Math.round((x - 390) / 60); // change phase every 60px
+                        //console.log(x, phase);
+                        if (phase != prevPhase) {
+                            console.log(`switching from phase ${prevPhase} to ${phase}`);
+                            for (var key in phaseDescriptors.opacity) {
+                                d3.select(key)
+                                    .transition()
+                                    .duration(transitionTime)
+                                    .style("opacity", phaseDescriptors.opacity[key][phase]);
+                            }
+                            for (var key in phaseDescriptors.transform) {
+                                d3.select(key)
+                                    .transition()
+                                    .duration(transitionTime)
+                                    .attr("transform", phaseDescriptors.transform[key][phase])
+                            }
+                            prevPhase = phase;
+                        }
+                    }
+                })
+                .on("end", function() {
+                    d3.select(this).attr("stroke", null)
+                })
+            )
+        })
+    </script>
+</body>
+
+</html>
