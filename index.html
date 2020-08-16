@@ -48,6 +48,11 @@
             "#mana_whenua": "images/Structural parts/Waitangi Wood (Mana Whenua Liason).jpg",
             "#physical_scientists": "images/Structural parts/Scientist-Nick-Waipara.jpg",
             "#technicians": "images/Structural parts/Lee Hill (Technical Manager).jpg",
+            "#communication_outreach": "images/Functional parts/communications.jpg",
+            "#collab_activities": "images/Functional parts/Co-Learning-network.jpg",
+            "#participant_engagement": "images/Functional parts/Tammy-in-front-of-kit.jpg",
+            "#participant_recruitment": "images/Functional parts/Mels-at-stand.jpg",
+            "#ambassador_program": "images/Functional parts/Ambassadors1.jpg",
         }
         d3.xml('model.svg').then(data => {
             document.body.append(data.documentElement) // load the data and put it in the DOM
@@ -59,7 +64,7 @@
             $.each(imageLookup, function(key) {
                 let img = $(`<img src="${imageLookup[key]}" id="${key.slice(1)}_img" style="display:none">`).appendTo("body");
                 d3.select(key).on("mouseover touchstart", function() {
-                    img.css({position: "absolute", display: "block", left: d3.event.x, top: d3.event.y - 300, height: 300})
+                    img.css({position: "absolute", display: "block", left: d3.event.x, top: d3.event.y - 150, height: 300})
                 }).on("mouseout touchend", function() {
                     img.hide()
                 });
