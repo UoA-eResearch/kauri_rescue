@@ -7,6 +7,7 @@
     <title>Kauri Rescue Social Science Model</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js" integrity="sha512-/DXTXr6nQodMUiq+IUJYCt2PPOUjrHJ9wFrqpJ3XkgPNOZVfMok7cRw6CSxyCQxXn6ozlESsSh1/sMCTF1rL/g==" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
@@ -15,12 +16,13 @@
             "opacity": {
                 "#funding":                 [0, 1, 0, 0, 0, 0],
                 "#project_team":            [0, 1, 1, 1, 1, 1],
+                "#community_knowledge":     [0, 0, 0, 1, 1, 1],
                 "#team_knowledge":          [0, 0, 0, 1, 1, 1],
-                "#collaborative_parts":     [0, 0, 1, 1, 1, 1],
+                "#collab_parts_inner":      [0, 0, 1, 1, 1, 1],
                 "#flow_arrow":              [0, 0, 1, 0, 0, 0],
                 "#enablers":                [0, 0, 0, 1, 1, 1],
                 "#disablers":               [0, 0, 0, 1, 1, 1],
-                "#functional_parts":        [0, 0, 0, 1, 1, 1],
+                "#func_parts_inner":        [0, 0, 0, 1, 1, 1],
                 "#learning_title":          [0, 0, 0, 1, 1, 1],
                 "#networking_planning":     [0, 0, 1, 0, 0, 0],
                 "#accumulated":             [0, 0, 0, 1, 1, 1],
@@ -37,6 +39,22 @@
                     "translate(-20, 250)",
                     "translate(-20, 250)",
                     "translate(-20, 250)"
+                ],
+                "#collaborative_parts": [
+                    "scale(1, .5)",
+                    "scale(1, .5)",
+                    "scale(1, .5)",
+                    "scale(1, .75)",
+                    "scale(1, .85)",
+                    "scale(1, 1)",
+                ],
+                "#functional_parts": [
+                    "scale(1, .5)",
+                    "scale(1, .5)",
+                    "scale(1, .5)",
+                    "scale(1, .8)",
+                    "scale(1, .9)",
+                    "scale(1, 1)",
                 ]
             }
         }
@@ -92,6 +110,7 @@
                                     .transition()
                                     .duration(transitionTime)
                                     .attr("transform", phaseDescriptors.transform[key][phase])
+                                    .attr("transform-origin", "center")
                             }
                             prevPhase = phase;
                         }
