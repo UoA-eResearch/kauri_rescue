@@ -96,6 +96,7 @@
                     if (x > 390 && x < 683) { // ends of the timeline slider
                         d3.select(this).attr("cx", d3.event.x)
                         var phase = Math.round((x - 390) / 60); // change phase every 60px
+                        window.phase = phase;
                         //console.log(x, phase);
                         if (phase != prevPhase) {
                             console.log(`switching from phase ${prevPhase} to ${phase}`);
@@ -118,6 +119,31 @@
                 })
                 .on("end", function() {
                     d3.select(this).attr("stroke", null)
+                })
+            )
+            window.enablers_factor = 1;
+            window.disablers_factor = 1;
+            function calcCollabSpace() {
+                var adjustment = (enablers_factor - disablers_factor) / 2 + 1;
+                //console.log(adjustment)
+                d3.select("#collaborative_parts").attr("transform", "scale(1, " + adjustment + ")");
+            }
+            d3.selectAll("#enablers,#disablers").call(d3.drag()
+                .on("start", function() {
+                    d3.select(this).select("rect").style("display", "inline")
+                })
+                .on("drag", function() {
+                    var bbox = this.getBBox();
+                    var y = (d3.event.y - bbox.y) / bbox.height;
+                    //console.log(bbox, d3.event.y, y)
+                    if (y > .5 && y < 1.5) {
+                        d3.select(this).attr("transform", "scale(1, " + y + ")").attr("transform-origin", "center")
+                        window[this.id + "_factor"] = y;
+                        calcCollabSpace();
+                    }
+                })
+                .on("end", function() {
+                    d3.select(this).select("rect").style("display", "none")
                 })
             )
         })
