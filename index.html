@@ -87,35 +87,59 @@
                     img.hide()
                 });
             });
+            d3.selectAll("#timeline_marker").on("mouseover touchstart", function() {
+                d3.select(this).style("stroke", "orange").style("stroke-width", 2)
+            }).on("mouseout touchend", function() {
+                d3.select(this).style("stroke", null)
+            });
+            d3.select("#play").on("click", function() {
+                d3.select("#pause").style("display", "inline");
+                d3.select("#play").style("display", "none")
+                window.playInterval = setInterval(function() {
+                    var x = parseInt(d3.select("#timeline_marker").attr("cx"));
+                    x++;
+                    if (x < 683) {
+                        d3.select("#timeline_marker").attr("cx", x);
+                        dragHandler(x);
+                    }
+                }, 30)
+            });
+            d3.select("#pause").on("click", function() {
+                d3.select("#play").style("display", "inline");
+                d3.select("#pause").style("display", "none")
+                clearInterval(window.playInterval);
+            });
+            function dragHandler(x) {
+                if (x > 390 && x < 683) { // ends of the timeline slider
+                    d3.select("#timeline_marker").attr("cx", x)
+                    var phase = Math.round((x - 390) / 60); // change phase every 60px
+                    window.phase = phase;
+                    //console.log(x, phase);
+                    if (phase != prevPhase) {
+                        console.log(`switching from phase ${prevPhase} to ${phase}`);
+                        for (var key in phaseDescriptors.opacity) {
+                            d3.select(key)
+                                .transition()
+                                .duration(transitionTime)
+                                .style("opacity", phaseDescriptors.opacity[key][phase]);
+                        }
+                        for (var key in phaseDescriptors.transform) {
+                            d3.select(key)
+                                .transition()
+                                .duration(transitionTime)
+                                .attr("transform", phaseDescriptors.transform[key][phase])
+                                .attr("transform-origin", "center")
+                        }
+                        prevPhase = phase;
+                    }
+                }
+            }
             d3.select("#timeline_marker").call(d3.drag()
                 .on("start", function() {
                     d3.select(this).attr("stroke", "orange")
                 })
                 .on("drag", function() {
-                    var x = d3.event.x;
-                    if (x > 390 && x < 683) { // ends of the timeline slider
-                        d3.select(this).attr("cx", d3.event.x)
-                        var phase = Math.round((x - 390) / 60); // change phase every 60px
-                        window.phase = phase;
-                        //console.log(x, phase);
-                        if (phase != prevPhase) {
-                            console.log(`switching from phase ${prevPhase} to ${phase}`);
-                            for (var key in phaseDescriptors.opacity) {
-                                d3.select(key)
-                                    .transition()
-                                    .duration(transitionTime)
-                                    .style("opacity", phaseDescriptors.opacity[key][phase]);
-                            }
-                            for (var key in phaseDescriptors.transform) {
-                                d3.select(key)
-                                    .transition()
-                                    .duration(transitionTime)
-                                    .attr("transform", phaseDescriptors.transform[key][phase])
-                                    .attr("transform-origin", "center")
-                            }
-                            prevPhase = phase;
-                        }
-                    }
+                    dragHandler(d3.event.x);
                 })
                 .on("end", function() {
                     d3.select(this).attr("stroke", null)
